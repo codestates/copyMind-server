@@ -89,21 +89,17 @@ module.exports = {
 
     postCopyController : async (req, res)=>{
         try{
-            const userId = await users.findOne({
-                attributes : ['id'],
-                where : {
-                    id : {
-                        [Op.eq] : req.session.userId 
-                    }
-                }
-            })
             const resultPost = await copy.create({
-                myPostingId : userId.id,
+                myPostingId : req.session.userId,
                 title : req.body.title,
                 writer : req.body.writer,
                 content : req.body.content,
                 category : req.body.category
+            }).then(result =>{
+                return result.get({plain:true})
             })
+            delete resultPost.createdAt
+            delete resultPost.updatedAt
             res.send({result : [resultPost]})
         }
         catch(err){
