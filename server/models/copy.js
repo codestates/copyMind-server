@@ -4,7 +4,7 @@ const {
 } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-  class copy extends Model {
+  class copies extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -18,12 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       this.belongsToMany(models.users,{
-        through : models.userBookmark,
+        through : models.userBookmarks,
         foreignKey : 'bookmarkId'
       })
     }
   };
-  copy.init({
+  copies.init({
     myPostingId: DataTypes.INTEGER,
     content: DataTypes.TEXT,
     title: DataTypes.STRING,
@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'copy',
+    modelName: 'copies',
   });
-  return copy;
+  return copies;
 };

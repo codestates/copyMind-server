@@ -1,12 +1,12 @@
-const { users, copy, Sequelize, userBookmark } = require('../models');
+const { users, copies, Sequelize, userBookmarks } = require('../models');
 const { Op } = require("sequelize");
 
 module.exports = {
     getCopyController : async (req, res)=>{
         if(req.session.userId){ //회원
-            if(req.body.pathName === 'view'){ //today`s copy 버튼
+            if(req.body.pathName === 'view'){ //today`s copies 버튼
                 try {
-                    const randomContent = await copy.findOne({
+                    const randomContent = await copies.findOne({
                         attributes : ['title', 'writer', 'content', 'category', 'likeCount', 'id'],
                         order : [
                             [Sequelize.literal('RAND()')]
@@ -20,7 +20,7 @@ module.exports = {
                 }
             }else{ // 메뉴 버튼
                 try {
-                    const content = await copy.findAll({
+                    const content = await copies.findAll({
                         attributes : ['title', 'writer', 'content', 'category', 'likeCount', 'id'],
                         where : {
                             category : {
@@ -41,7 +41,7 @@ module.exports = {
         }else if(!req.session.userId){ // 비회원
             if(req.body.pathName === 'view'){
                 try{
-                    const limitContent = await copy.findOne({
+                    const limitContent = await copies.findOne({
                         attributes : ['title', 'writer', 'content', 'category', 'likeCount', 'id'],
                         where : { id :
                             {
@@ -61,7 +61,7 @@ module.exports = {
                 }
             }else{
                 try {
-                    const limitContent = await copy.findAll({
+                    const limitContent = await copies.findAll({
                         attributes : ['title', 'writer', 'content', 'category', 'likeCount', 'id'],
                         where : { 
                             [Op.and] : [
@@ -89,7 +89,7 @@ module.exports = {
 
     postCopyController : async (req, res)=>{
         try{
-            const resultPost = await copy.create({
+            const resultPost = await copies.create({
                 myPostingId : req.session.userId,
                 title : req.body.title,
                 writer : req.body.writer,
@@ -109,22 +109,22 @@ module.exports = {
 
     addLikeController: async (req, res) => {
         try {
-          await userBookmark.create({
+          await userBookmarks.create({
             userId: req.session.userId,
             bookmarkId: req.body.id,
           });
-            await copy.update(
+            await copies.update(
               { likeCount: Sequelize.literal("likeCount + 1") },
               { where: { id: req.body.id } }
             );
-          const addlikeCount = await copy.findOne({
+          const addlikeCount = await copies.findOne({
             attributes: ["likeCount"],
             where: {
               id: req.body.id,
             },
           });
 
-          const bookmarkId = await userBookmark.findAll({
+          const bookmarkId = await userBookmarks.findAll({
               where : {userId : req.session.userId}
           })
 
@@ -146,24 +146,24 @@ module.exports = {
     removeLikeController: async (req, res) => {
         try {
 
-            await userBookmark.destroy({
+            await userBookmarks.destroy({
               where: {
                 userId: req.session.userId,
                 bookmarkId: req.body.id,
               },
             });
-            await copy.update(
+            await copies.update(
               { likeCount: Sequelize.literal("likeCount - 1") },
               { where: { id : req.body.id } }
             );
-          const subtractlikeCount = await copy.findOne({
+          const subtractlikeCount = await copies.findOne({
             attributes: ["likeCount"],
             where: {
               id: req.body.id,
             },
           });
 
-        const bookmarkId = await userBookmark.findAll({
+        const bookmarkId = await userBookmarks.findAll({
             where : {userId : req.session.userId}
         })
 

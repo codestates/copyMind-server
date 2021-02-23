@@ -12,12 +12,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
 
-      this.hasMany(models.copy,{
+      this.hasMany(models.copies,{
         foreignKey : 'id',
       })
 
-      this.belongsToMany(models.copy,{
-        through : models.userBookmark,
+      this.belongsToMany(models.copies,{
+        through : models.userBookmarks,
         foreignKey : 'userId'
       })
     }
