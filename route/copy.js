@@ -94,7 +94,6 @@ router.post('/getcopy', async (req, res) => {
 });
 
 router.post('/postcopy', async (req, res) => {
-   console.log(req.session.userId);
    const resultPost = await Copies.create({
       title: req.body.title,
       writer: req.body.writer,
@@ -108,12 +107,9 @@ router.post('/postcopy', async (req, res) => {
 });
 
 router.post('/addlike', async (req, res) => {
-   console.log(req.session);
    const insertBookmark = await Users.findOne({
       _id: req.session.userId,
    });
-
-   console.log(insertBookmark);
 
    insertBookmark.bookmark.push(req.body.id);
    insertBookmark.save();
