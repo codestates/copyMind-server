@@ -6,7 +6,7 @@ const copiesShcema = new Schema(
       title: { type: String },
       writer: { type: String },
       category: { type: String },
-      likeCount: { type: String },
+      likeCount: { type: Number, default: 0 },
    },
    {
       timestamps: true,
