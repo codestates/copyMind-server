@@ -4,6 +4,8 @@ const morgan = require('morgan');
 const cors = require('cors');
 const session = require('express-session');
 const mongoose = require('mongoose');
+// const passport = require('passport');
+// const passportConfig = require('./passport');
 require('dotenv').config();
 
 const app = express();
@@ -16,6 +18,7 @@ const sign = require('./route/sign');
 const copy = require('./route/copy');
 const user = require('./route/user');
 const oauth = require('./route/oauth');
+// const Users = require('./models/users');
 
 app.set('port', process.env.PORT || 8080);
 
@@ -62,6 +65,9 @@ app.use(
       saveUninitialized: true,
    })
 );
+// app.use(passport.initialize()); // passport 구동
+// app.use(passport.session()); // 세션 연결
+// passportConfig(); // 이 부분 추가
 
 app.use('/sign', sign);
 app.use('/copy', copy);

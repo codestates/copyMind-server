@@ -1,4 +1,5 @@
 const express = require('express');
+const { isLoggedIn } = require('../middleware/login');
 const Copies = require('../models/copy');
 const router = express.Router();
 const Users = require('../models/users');
@@ -93,16 +94,22 @@ router.post('/getcopy', async (req, res) => {
    }
 });
 
-router.post('/postcopy', async (req, res) => {
+router.post('/postcopy', isLoggedIn, async (req, res) => {
    const resultPost = await Copies.create({
       title: req.body.title,
       writer: req.body.writer,
       content: req.body.content,
       category: req.body.category,
    });
-   await Users.create({
-      posting: resultPost._id,
+
+   const updatePosting = await Users.findOne({
+      _id: req.session.userId,
    });
+
+   updatePosting.posting.push(resultPost._id);
+   updatePosting.save();
+
+   console.log(updatePosting);
    return res.status(200).send({ result: [resultPost] });
 });
 

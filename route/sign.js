@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const crypto = require('crypto');
+const bcrypt = require('bcrypt');
 const users = require('../models/users');
 
 router.post('/signin', async (req, res) => {
@@ -20,10 +20,9 @@ router.post('/signin', async (req, res) => {
 router.post('/signup', async (req, res) => {
    const { email, password, userName } = req.body;
 
-   const hashPassword = crypto
-      .createHash('sha512')
-      .update(password)
-      .digest('hex');
+   console.log(req.body);
+
+   const hashPassword = await bcrypt.hash(password, 12);
 
    const exUserEamil = await users.findOne({ email: email });
    const exUserName = await users.findOne({ userName: userName });
